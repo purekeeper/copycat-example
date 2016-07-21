@@ -4,7 +4,7 @@ import io.atomix.catalyst.transport.Address;
 import io.atomix.catalyst.transport.netty.NettyTransport;
 import io.atomix.copycat.server.CopycatServer;
 import io.atomix.copycat.server.storage.Storage;
-import java.time.Duration;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,6 +12,7 @@ import java.util.List;
  * Created by root on 16-7-20.
  */
 public class mss_server {
+
     public static void main(String[] args) throws Exception {
         //  if (args.length < 2)
         // throw new IllegalArgumentException("must supply a path and set of host:port tuples");
@@ -30,20 +31,22 @@ public class mss_server {
                 .withStateMachine(TrieStateMachine::new)
                 .withTransport(new NettyTransport())
                 .withStorage(Storage.builder()
-                        .withDirectory("C:\\Users\\123\\workspace\\log")
+                       // .withDirectory("/home/yangjian/workspace/copycat/log")
+                         .withDirectory("F:\\copycat\\log")
+
                         .withMaxSegmentSize(1024 * 1024 * 32)
-                        .withMinorCompactionInterval(Duration.ofMinutes(1))
-                        .withMajorCompactionInterval(Duration.ofMinutes(15))
+                        //  .withMinorCompactionInterval(Duration.ofMinutes(1))
+                       // .withMajorCompactionInterval(Duration.ofMinutes(15))
                         .build())
                 .build();
-
         server.serializer().register(SetCommand.class, 1);
-        server.serializer().register(QueryCommand.class, 2);
+       server.serializer().register(LoadCommand.class,2);
+        server.serializer().register(QueryCommand.class, 3);
 
         server.bootstrap(members).join();
 
-        while (server.isRunning()) {
+       /* while (server.isRunning()) {
             Thread.sleep(1000);
-        }
+        }*/
     }
 }

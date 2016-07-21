@@ -5,18 +5,18 @@ import io.atomix.copycat.Command;
 /**
  * Created by root on 16-7-20.
  */
-public class SetCommand implements Command<Object> {
-    private final Object value;
-
-    public SetCommand(Object value) {
-        this.value = value;
+public class SetCommand implements Command<Void> {
+   // private  SetData data;
+private String data;
+    public SetCommand(String data) {
+        this.data = data;
     }
 
     /**
      * Returns the value.
      */
-    public Object value() {
-        return value;
+    public String GetData() {
+        return data;
     }
 
    // @Override
