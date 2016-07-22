@@ -13,7 +13,7 @@ import java.util.Scanner;
 /**
  * Created by root on 16-7-20.
  */
-public class mss_client {
+public class MssClient {
 
     public static void main(String[] args) throws Exception {
         Scanner sc = new Scanner(System.in);
@@ -21,7 +21,6 @@ public class mss_client {
         SetData sdata=new SetData();
         // if (args.length < 1)
         //  throw new IllegalArgumentException("must supply a set of host:port tuples");
-
         // Build a list of all member addresses to which to connect.
         List<Address> members = new ArrayList<>();
         //  for (String arg : args) {
@@ -41,7 +40,7 @@ public class mss_client {
         client.serializer().register(QueryCommand.class, 3);
         client.connect(members).join();
         //AtomicInteger counter = new AtomicInteger();
-      //  AtomicLong timer = new AtomicLong();
+        //  AtomicLong timer = new AtomicLong();
      /*
         client.context().schedule(Duration.ofSeconds(1), Duration.ofSeconds(1), () -> {
             long count = counter.get();
@@ -54,42 +53,44 @@ public class mss_client {
             timer.set(time);
         });
 */
-        //qdata.SetDic("/home/yangjian/workspace/copycat/src/dic/anjuke_sale_100.txt");
-        qdata.SetDic("F:\\copycat\\src\\dic\\anjuke_sale_100.txt");
-
+        qdata.SetDic("/home/yangjian/workspace/copycat/src/dic/anjuke_sale_100.txt");
+        //qdata.SetDic("F:\\copycat\\src\\dic\\anjuke_sale_100.txt");
         String cmd;
         while(true)
         {
-          cmd=sc.next();
+            cmd=sc.next();
             if(cmd.equals("query"))
             {
                 System.out.println("input key:");
-               // qdata.SetText();
-
-                client.submit(new QueryCommand(sc.next())).thenRun(() ->
+                // qdata.SetText();
+                client.submit(new QueryCommand("dic","text")).thenAccept(QueryResult ->
                 {
+                    System.out.println(QueryResult);
                     System.out.println("Query Sucess!!!");
                 });
             }
-
             else if(cmd.equals("set"))
             {
                 String keyValue;
                 System.out.println("input key:");
-               keyValue=sc.next();
+                keyValue=sc.next();
                 keyValue+=":";
                 System.out.println("input value:");
                 keyValue+=sc.next();
-         //       sdata.SetValue(sc.next());
-                client.submit(new SetCommand(keyValue)).thenRun(() ->
+                //       sdata.SetValue(sc.next());
+                client.submit(new SetCommand()).thenRun(() ->
                 {
                     System.out.println("Set Sucess!!!");
                 });
             }
             else if(cmd.equals("load"))
             {
-                client.submit(new LoadCommand("anjuke_sal")).thenRun(() ->
+                // client.submit(new LoadCommand("anjuke_sale_100")).thenAccept()
+                //client.submit(new LoadCommand("anjuke_sale_100")).thenRun(() ->
+                client.submit(new LoadCommand("anjuke_sale_100")).thenRun(() ->
                 {
+
+                    //System.out.println(QueryResult.toString());
                     System.out.println("Load Sucess!!!");
                 });
             }

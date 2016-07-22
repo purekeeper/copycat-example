@@ -45,5 +45,11 @@
             <artifactId>concurrent-trees</artifactId>
             <version>2.6.0</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/org.mapdb/mapdb -->
+        <dependency>
+            <groupId>org.mapdb</groupId>
+            <artifactId>mapdb</artifactId>
+            <version>3.0.0</version>
+        </dependency>
     </dependencies>
 </project>

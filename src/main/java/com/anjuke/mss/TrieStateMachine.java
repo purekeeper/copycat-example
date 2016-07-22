@@ -1,96 +1,71 @@
 package com.anjuke.mss;
 
-import com.googlecode.concurrenttrees.common.Iterables;
 import com.googlecode.concurrenttrees.radix.node.concrete.DefaultCharArrayNodeFactory;
 import com.googlecode.concurrenttrees.radixinverted.ConcurrentInvertedRadixTree;
-import com.googlecode.concurrenttrees.radixreversed.ConcurrentReversedRadixTree;
+import io.atomix.copycat.Operation;
 import io.atomix.copycat.server.Commit;
 import io.atomix.copycat.server.StateMachine;
 import io.atomix.copycat.server.StateMachineExecutor;
-
-//import javax.naming.directory.SearchResult;
-import java.io.*;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.List;
+import java.util.ArrayList;
 
 /**
  * Created by root on 16-7-20.
  */
 public class TrieStateMachine extends StateMachine
 {
-  //  private Map<String,ConcurrentInvertedRadixTree> trees = new ConcurrentHashMap<String,ConcurrentInvertedRadixTree>();
-  ConcurrentInvertedRadixTree<String> tree = new ConcurrentInvertedRadixTree<String>(new DefaultCharArrayNodeFactory());
-    //  private Commit<SetCommand> commitSetData;
+    //value=id+keywordtype
+
+    Map<String,ConcurrentInvertedRadixTree> trees = new HashMap<String,ConcurrentInvertedRadixTree>();
     @Override
     protected void configure(StateMachineExecutor executor) {
-        executor.register(LoadCommand.class,this::LoadDic);
         executor.register(SetCommand.class, this::Set);
         executor.register(QueryCommand.class, this::Get);
     }
     /**
      * Sets the value.    */
-    public void LoadDic(Commit<LoadCommand> commitLoadData)
-    {
-        String fileName;
-    //    System.out.println(commitLoadData.operation().GetFileName());
-        System.out.println("Load!!");
-       // filName= commitLoadData.operation().GetData();
-       // String fileName = commitLoadData.operation().GetFileName();
-        //fileName="/home/yangjian/workspace/copycat/src/dic/anjuke_sale_100.txt";
-        fileName="F:\\copycat\\src\\dic\\anjuke_sale_100.txt";
-        File file = new File(fileName);
-        BufferedReader reader = null;
-        try {
-            String temp;
-            int i = 0;
-            reader = new BufferedReader(new FileReader(file));
-            while ((temp = reader.readLine()) != null) {
-                temp = temp.trim();
-                if (temp.equals("")) {
-                    continue;
-                }
-                String[] line = temp.split(":", 2);
-                String word = line[0];
-                String type = "";
-                if (line.length == 1) {
-                    type = "ban";
-                } else {
-                    type = line[1];
-                }
-                tree.put(word, type);
-                i++;
-            }
-            System.out.println("loaded " + fileName + ", contains " + i	+ " words");
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-             commitLoadData.close();
-            try {
-                reader.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
     public void Set(Commit<SetCommand> commitSetData) {
+        /*
+        key word is the key ,id and key word type is value of the tree.
+         */
         System.out.println("Setting!!");
+        ConcurrentInvertedRadixTree<List> tree = null;//
+        Iterator mapIterator = null;
+        Map<String,String> keyWordType  = null;
+        List<String> treeValue = null;
+        String keyType = null;
+        String key=null;
+        SetCommand setData;
         try {
-            ConcurrentInvertedRadixTree<String> tree=null;
-            if (commitSetData != null) {
-                String data = commitSetData.operation().GetData();
-                String[] line = data.split(":", 2);
-                tree.remove(line[0]);
-                tree.put(line[0],line[1]);
-                commitSetData.close();
-            }
-
+                setData = commitSetData.operation();
+                if(trees.containsKey(setData.getDic()))
+                    tree = trees.get(setData.getDic());
+                else
+                    tree = new ConcurrentInvertedRadixTree<List>(new DefaultCharArrayNodeFactory());
+                keyWordType= setData.getKey();//key:keyWordType
+                mapIterator = keyWordType.keySet().iterator();
+                while(mapIterator.hasNext())
+                {
+                    key = mapIterator.next().toString();//
+                    keyType = keyWordType.get(key);//key word type->name,alias,address....
+                  if((tree.getValueForExactKey(key))==null)
+                 {
+                     treeValue.add(setData.getId());
+                     treeValue.add(keyType);
+                     tree.put(key,treeValue);
+                 }
+                  else {
+                     tree.remove(key);
+                     tree.put(key,treeValue);
+                  }
+                }
+                trees.put(setData.getDic(),tree);
         } catch (Exception e) {
-
-            throw e;
+            System.out.println(e.toString());
+            e.printStackTrace();
         }
         finally {
             commitSetData.close();
@@ -99,27 +74,33 @@ public class TrieStateMachine extends StateMachine
     /**
      * Gets the value.
      */
-    public void Get(Commit<QueryCommand> commitQueryData)
+    public String Get(Commit<QueryCommand> commitQueryData)
     {
         System.out.println("quering!!!");
-        Iterable searcher;
+        String QueryResult=null;
+        Iterator searcher;
+        String queryText=null;
+        QueryCommand queryData= null;
+        ConcurrentInvertedRadixTree<List> tree = null;
         try {
-         //   ConcurrentInvertedRadixTree<String> tree = null;
-           // QueryData data = null;
-            String data=null;
-            if (commitQueryData != null) {
-                data = commitQueryData.operation().GetData();
-                //tree = trees.get(data.GetDic());
-
-                //searcher =
-
-                System.out.println(data);
-                Iterables.toString(tree.getValuesForKeysContainedIn(data));
-
-            }
-
+            queryData = commitQueryData.operation();
+              if(!trees.containsKey(queryData.getDic()))
+              {
+                  return null;
+              }
+                queryText = queryData.getText();
+                tree = trees.get(queryData.getDic());
+                searcher = tree.getValuesForKeysContainedIn(queryText).iterator();
+                if(searcher.hasNext())
+                    QueryResult = searcher.next().toString();
+               while(searcher.hasNext())
+               {
+                   QueryResult+="|";
+                   QueryResult+=searcher.next().toString();
+               }
         } finally {
             commitQueryData.close();
         }
+        return QueryResult;
     }
 }

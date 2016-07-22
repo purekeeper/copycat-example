@@ -6,7 +6,7 @@ import io.atomix.copycat.Command;
  * Created by root on 16-7-21.
  */
 public class LoadCommand implements Command<Void> {
-    private final String fileName;
+    private  String fileName;
 
     public LoadCommand(String fileName) {
         this.fileName = fileName;

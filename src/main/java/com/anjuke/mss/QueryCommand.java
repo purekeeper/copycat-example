@@ -12,18 +12,22 @@ import io.atomix.copycat.Query;
  */
 
 
-public class QueryCommand implements Query<Void> {
-   // private QueryData data;
-    private String data;
-    public QueryCommand(String data)
+public class QueryCommand implements Query<String> {
+    private String dic;
+    private String text;
+    public QueryCommand(){}
+    public QueryCommand(String dic,String text)
     {
-
-        //System.out.println("new QueryCommanda!!");
-         this.data=data;
+        this.dic=dic;
+        this.text=text;
     }
-    public String GetData()
+    public String getDic()
     {
-        return data;
+        return dic;
+    }
+    public String getText()
+    {
+        return text;
     }
    // @Override
     public ConsistencyLevel consistency() {

@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * Created by root on 16-7-20.
  */
-public class mss_server {
+public class MssServer {
 
     public static void main(String[] args) throws Exception {
         //  if (args.length < 2)
@@ -31,16 +31,16 @@ public class mss_server {
                 .withStateMachine(TrieStateMachine::new)
                 .withTransport(new NettyTransport())
                 .withStorage(Storage.builder()
-                       // .withDirectory("/home/yangjian/workspace/copycat/log")
-                         .withDirectory("F:\\copycat\\log")
+                        .withDirectory("/home/yangjian/workspace/copycat/log")
+                        //.withDirectory("F:\\copycat\\log")
 
                         .withMaxSegmentSize(1024 * 1024 * 32)
                         //  .withMinorCompactionInterval(Duration.ofMinutes(1))
-                       // .withMajorCompactionInterval(Duration.ofMinutes(15))
+                        // .withMajorCompactionInterval(Duration.ofMinutes(15))
                         .build())
                 .build();
         server.serializer().register(SetCommand.class, 1);
-       server.serializer().register(LoadCommand.class,2);
+        server.serializer().register(LoadCommand.class,2);
         server.serializer().register(QueryCommand.class, 3);
 
         server.bootstrap(members).join();
