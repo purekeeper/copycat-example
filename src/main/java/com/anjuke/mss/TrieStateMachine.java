@@ -2,7 +2,10 @@ package com.anjuke.mss;
 
 import com.googlecode.concurrenttrees.radix.node.concrete.DefaultCharArrayNodeFactory;
 import com.googlecode.concurrenttrees.radixinverted.ConcurrentInvertedRadixTree;
-import io.atomix.copycat.Operation;
+import org.mapdb.*;
+
+import java.util.concurrent.ConcurrentMap;
+
 import io.atomix.copycat.server.Commit;
 import io.atomix.copycat.server.StateMachine;
 import io.atomix.copycat.server.StateMachineExecutor;
@@ -17,7 +20,22 @@ import java.util.ArrayList;
  */
 public class TrieStateMachine extends StateMachine
 {
+
     //value=id+keywordtype
+    DB db = DBMaker
+            .fileDB("file.db")
+            .make();
+
+    Atomic.String id = db.atomicString("").create();
+    Atomic.String type = db.atomicString("").create();
+    HTreeMap<String, String> setKey = db.hashMap("name_of_map")
+            .keySerializer(Serializer.STRING)
+            .valueSerializer(Serializer.STRING)
+            .create();
+    //or shorter form
+    HTreeMap<String, Long> setValue = db
+            .hashMap("some_other_map", Serializer.STRING, Serializer.LONG)
+            .create();
 
     Map<String,ConcurrentInvertedRadixTree> trees = new HashMap<String,ConcurrentInvertedRadixTree>();
     @Override
