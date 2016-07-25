@@ -9,5 +9,8 @@
     <SOURCES>
       <root url="jar://$MAVEN_REPOSITORY$/org/eclipse/collections/eclipse-collections-api/7.1.0/eclipse-collections-api-7.1.0-sources.jar!/" />
     </SOURCES>
+    <excluded>
+      <root url="jar://$MAVEN_REPOSITORY$/org/eclipse/collections/eclipse-collections-api/7.1.0/eclipse-collections-api-7.1.0-sources.jar!/" />
+    </excluded>
   </library>
 </component>

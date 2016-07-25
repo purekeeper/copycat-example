@@ -28,7 +28,7 @@ public class MssServer {
         members.add(new Address("127.0.0.1", 5000));
 
         CopycatServer server = CopycatServer.builder(address)
-                .withStateMachine(TrieStateMachine::new)
+                .withStateMachine(TrieDBStateMachine::new)
                 .withTransport(new NettyTransport())
                 .withStorage(Storage.builder()
                         .withDirectory("/home/yangjian/workspace/copycat/log")
