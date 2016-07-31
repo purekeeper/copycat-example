@@ -19,6 +19,7 @@ public class TrieDBStateMachine extends StateMachine
 
     //value=id+keywordtype
     MapDB db = new MapDB();
+    QueryValue value = null;
     Map<String,ConcurrentInvertedRadixTree> trees = new HashMap<String,ConcurrentInvertedRadixTree>();
     @Override
     protected void configure(StateMachineExecutor executor) {
@@ -28,6 +29,7 @@ public class TrieDBStateMachine extends StateMachine
     /**
      * Sets the value.    */
     public void Set(Commit<SetCommand> commitSetData) {
+
         /*
         key word is the key ,id and key word type is value of the tree.
          */
@@ -41,12 +43,19 @@ public class TrieDBStateMachine extends StateMachine
         SetCommand setData;
         try {
             setData = commitSetData.operation();
+            //update DB
+            db.createDB(setData.getDic());//create DB
+
+            db.setDB(setData.getId(),new QueryValue(setData.getId(),setData.getKey(),setData.getValue())  );
+            db.close();
+            //update tree
             if(trees.containsKey(setData.getDic()))
                 tree = trees.get(setData.getDic());
             else
                 tree = new ConcurrentInvertedRadixTree<List>(new DefaultCharArrayNodeFactory());
             keyWordType= setData.getKey();//key:keyWordType
             mapIterator = keyWordType.keySet().iterator();
+
             while(mapIterator.hasNext())
             {
                 key = mapIterator.next().toString();//
@@ -61,8 +70,11 @@ public class TrieDBStateMachine extends StateMachine
                     tree.remove(key);
                     tree.put(key,treeValue);
                 }
+
+
             }
             trees.put(setData.getDic(),tree);
+
         } catch (Exception e) {
             System.out.println(e.toString());
             e.printStackTrace();

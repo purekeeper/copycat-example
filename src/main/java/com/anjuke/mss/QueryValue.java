@@ -2,29 +2,32 @@ package com.anjuke.mss;
 import org.mapdb.Atomic;
 import org.mapdb.HTreeMap;
 
+import java.io.Serializable;
+import java.util.Map;
+
 /**
  * Created by root on 16-7-25.
  */
-public class QueryValue {
-    private Atomic.String type;
-    private HTreeMap setKey;
-    private HTreeMap setValue;
-    public QueryValue(Atomic.String type,HTreeMap setKey,HTreeMap setValue)
+public class QueryValue implements Serializable {
+    private String type;
+    private Map<String,String> setKey;
+    private Map<String,String> setValue;
+    public QueryValue(String type, Map setKey, Map setValue)
     {
         this.type = type;
         this.setKey = setKey;
         this.setValue = setValue;
     }
-    public void setType(Atomic.String type)
+    public void setType(String type)
     {this.type = type;}
-    public Atomic.String getType()
+    public String getType()
     {return this.type;}
-    public void setSetKey(HTreeMap setKey)
+    public void setSetKey(Map setKey)
     {this.setKey = setKey;}
-    public HTreeMap getSetKey()
+    public Map getSetKey()
     {return this.setKey;}
-    public void setSetValue(HTreeMap setValue)
+    public void setSetValue(Map setValue)
     {this.setValue = setValue;}
-    public HTreeMap getSetValue()
+    public Map getSetValue()
     {return this.setValue;}
 }
