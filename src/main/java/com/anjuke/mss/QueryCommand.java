@@ -5,6 +5,8 @@ package com.anjuke.mss;
  */
 import io.atomix.copycat.Query;
 
+import java.util.List;
+
 /**
  * Value get query.
  *
@@ -12,7 +14,7 @@ import io.atomix.copycat.Query;
  */
 
 
-public class QueryCommand implements Query<String> {
+public class QueryCommand implements Query<List<ResponseData>> {
     private String dic;
     private String text;
     public QueryCommand(){}

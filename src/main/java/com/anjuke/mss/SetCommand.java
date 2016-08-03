@@ -1,6 +1,6 @@
 package com.anjuke.mss;
 import io.atomix.copycat.Command;
-import java.util.HashMap;
+
 import java.util.Map;
 /**
  * Created by root on 16-7-20.
@@ -9,13 +9,13 @@ public class SetCommand implements Command<Void> {
     private String dic;
     private String id;
     private String type;
-    private Map key;
-    private Map value;
+    private Map<String,String> key;
+    private Map<String,String> value;
     public SetCommand(){}
-    public SetCommand(String dic,String id,String type,Map key,Map value)
+    public SetCommand(String dic,String id,String type,Map<String,String> key,Map<String,String> value)
     {
-        key = new HashMap<String,String>();
-        value = new HashMap<String,String>();
+       // key = new HashMap<String,String>();
+        //value = new HashMap<String,String>();
         this.dic = dic;
         this.id = id;
         this.type = type;
@@ -50,20 +50,29 @@ public class SetCommand implements Command<Void> {
     {
         this.key=key;
     }
-    public Map getKey()
-    {
+    public Map getKey() {
         return key;
     }
-    public void setValue(Map value)
-    {
+    public void setValue(Map value) {
         this.value=value;
     }
-    public Map getValue()
-    {
+    public Map getValue() {
         return value;
     }
    // @Override
     public CompactionMode compaction() {
         return CompactionMode.QUORUM;
+    }
+
+
+    @Override
+    public String toString() {
+        return "SetCommand{" +
+                "dic='" + dic + '\'' +
+                ", id='" + id + '\'' +
+                ", type='" + type + '\'' +
+                ", key=" + key +
+                ", value=" + value +
+                '}';
     }
 }

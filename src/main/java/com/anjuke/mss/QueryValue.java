@@ -1,7 +1,4 @@
 package com.anjuke.mss;
-import org.mapdb.Atomic;
-import org.mapdb.HTreeMap;
-
 import java.io.Serializable;
 import java.util.Map;
 
@@ -9,25 +6,26 @@ import java.util.Map;
  * Created by root on 16-7-25.
  */
 public class QueryValue implements Serializable {
+    private String id;
     private String type;
-    private Map<String,String> setKey;
-    private Map<String,String> setValue;
+    private Map<String,String> keyWord;
+    private Map<String,Object> value;
     public QueryValue(String type, Map setKey, Map setValue)
     {
         this.type = type;
-        this.setKey = setKey;
-        this.setValue = setValue;
+        this.keyWord = setKey;
+        this.value = setValue;
     }
     public void setType(String type)
     {this.type = type;}
     public String getType()
     {return this.type;}
     public void setSetKey(Map setKey)
-    {this.setKey = setKey;}
+    {this.keyWord = setKey;}
     public Map getSetKey()
-    {return this.setKey;}
+    {return this.keyWord;}
     public void setSetValue(Map setValue)
-    {this.setValue = setValue;}
+    {this.value = setValue;}
     public Map getSetValue()
-    {return this.setValue;}
+    {return this.value;}
 }

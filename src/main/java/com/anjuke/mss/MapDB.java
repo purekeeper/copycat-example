@@ -1,66 +1,44 @@
 package com.anjuke.mss;
-import org.mapdb.*;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
+import org.mapdb.DB;
+import org.mapdb.DBMaker;
+import org.mapdb.HTreeMap;
+import org.mapdb.Serializer;
 
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
+
 /**
  * Created by yangjian on 16-7-25.
  */
 public  class MapDB {
-    private DB db;
-    private HTreeMap<String,QueryValue> tableStore;
-    public  void createDB(String tableName)
+    private  DB db = DBMaker.fileDB("DB").make();
+    private  LoadingCache<String,Map<String,QueryValue>> cache ;
+    public MapDB()
     {
-
+        cache = CacheBuilder
+            .newBuilder()
+            .build(new CacheLoader<String, Map<String,QueryValue>>() {
+                @Override
+                public Map<String,QueryValue> load(String dic) throws Exception {
+                    HTreeMap<String, QueryValue> tableStore = db.hashMap(dic)
+                            .keySerializer(Serializer.STRING)
+                            .valueSerializer(Serializer.JAVA)
+                            .createOrOpen();
+                    return tableStore;
+                }
+            });
+    }
+    public Map<String, QueryValue> getTable(String tableName) {
         try {
-            db = DBMaker.fileDB(tableName).make();
-            tableStore = db.hashMap("tableStore")
-                    .keySerializer(Serializer.STRING)
-                    .valueSerializer(Serializer.JAVA)
-                    .createOrOpen();
-        } catch (Exception e) {
-            System.out.println(e.toString());
+            return cache.get(tableName);
+        } catch (ExecutionException e) {
+            throw new RuntimeException("cache error!",e);
         }
     }
-    public boolean cheackkeyExist()
-    {
-
-    }
-    public void openDB(String tableName)
-    {
-        try {
-            db = DBMaker.fileDB(tableName).make();
-            tableStore = db.hashMap("tableStore")
-                    .keySerializer(Serializer.STRING)
-                    .valueSerializer(Serializer.JAVA)
-                    .open();
-        } catch (Exception e) {
-            System.out.println(e.toString());
-        }
-    }
-    public String getOldKey()
-    {
-
-    }
-    public  void setDB(String id,QueryValue value)
-    {
-        tableStore.put(id, value);
-    }
-    public QueryValue getDataForId(String id)
-    {
-        if (tableStore.get(id) == null)
-            System.out.println("aaaa");
-        QueryValue data = (QueryValue) tableStore.get(id);
-        //type = (Atomic.String)data[0];
-        //setKey = (HTreeMap)data[1];
-        //setValue = (HTreeMap)data[2];
-        return data;
-    }
-
     public void close() {
-        try {
             db.close();
-        } catch (Exception e) {
-            System.out.println(e.toString());
-        }
     }
 }

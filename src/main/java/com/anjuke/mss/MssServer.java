@@ -40,8 +40,7 @@ public class MssServer {
                         .build())
                 .build();
         server.serializer().register(SetCommand.class, 1);
-        server.serializer().register(LoadCommand.class,2);
-        server.serializer().register(QueryCommand.class, 3);
+        server.serializer().register(QueryCommand.class, 2);
 
         server.bootstrap(members).join();
 
