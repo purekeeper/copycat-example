@@ -6,6 +6,8 @@ import com.googlecode.concurrenttrees.radixinverted.ConcurrentInvertedRadixTree;
 import io.atomix.copycat.server.Commit;
 import io.atomix.copycat.server.StateMachine;
 import io.atomix.copycat.server.StateMachineExecutor;
+
+import javax.annotation.Resource;
 import java.util.Map.Entry;
 
 import java.util.*;
@@ -16,7 +18,9 @@ import java.util.*;
 public class TrieDBStateMachine extends StateMachine
 {
     //value=id+keywordtype
-    MapDB db = new MapDB();
+    @Resource
+    MapDB db;
+
     Map<String,ConcurrentInvertedRadixTree> trees = new HashMap<String,ConcurrentInvertedRadixTree>();
     @Override
     protected void configure(StateMachineExecutor executor) {

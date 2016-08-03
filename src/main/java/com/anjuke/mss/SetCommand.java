@@ -10,9 +10,9 @@ public class SetCommand implements Command<Void> {
     private String id;
     private String type;
     private Map<String,String> key;
-    private Map<String,String> value;
+    private Map<String,Object> value;
     public SetCommand(){}
-    public SetCommand(String dic,String id,String type,Map<String,String> key,Map<String,String> value)
+    public SetCommand(String dic,String id,String type,Map<String,String> key,Map<String,Object> value)
     {
        // key = new HashMap<String,String>();
         //value = new HashMap<String,String>();
@@ -22,32 +22,25 @@ public class SetCommand implements Command<Void> {
         this.key = key;
         this.value = value;
     }
-    public void setType(String type)
-    {
+    public void setType(String type) {
         this.type=type;
     }
-    public String getType()
-    {
+    public String getType() {
         return type;
     }
-    public void setDic(String dic)
-    {
+    public void setDic(String dic) {
         this.dic=dic;
     }
-    public String getDic()
-    {
+    public String getDic() {
         return dic;
     }
-    public void setId(String id)
-    {
+    public void setId(String id) {
         this.id=id;
     }
-    public String getId()
-    {
+    public String getId() {
         return id;
     }
-    public void setKey(Map Key)
-    {
+    public void setKey(Map Key) {
         this.key=key;
     }
     public Map getKey() {

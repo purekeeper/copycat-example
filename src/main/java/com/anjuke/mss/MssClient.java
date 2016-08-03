@@ -6,21 +6,30 @@ import io.atomix.copycat.client.ConnectionStrategies;
 import io.atomix.copycat.client.CopycatClient;
 import io.atomix.copycat.client.RecoveryStrategies;
 import io.atomix.copycat.client.ServerSelectionStrategies;
+import org.springframework.stereotype.Controller;
 
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 /**
  * Created by root on 16-7-20.
  */
+@Controller
 public class MssClient {
-
-    public static void main(String[] args) throws Exception {
-        Scanner sc = new Scanner(System.in);
-        Map<String,String> key = new HashMap<>();
-        Map<String,String> value = new HashMap<>();
+     private String ipAddress;
+     private int port;
+     private CopycatClient client = null;
+  //  public static void main(String[] args) throws Exception
+    public MssClient(String ipAddress,int port) {
+        this.ipAddress = ipAddress;
+        this.port = port;
+    }
+       public void init(){
+        //Scanner sc = new Scanner(System.in);
         List<Address> members = new ArrayList<>();
-        members.add(new Address("127.0.0.1",5000));
-        CopycatClient client = CopycatClient.builder()
+        members.add(new Address(ipAddress,port));
+           client = CopycatClient.builder()
                 .withTransport(new NettyTransport())
                 .withConnectionStrategy(ConnectionStrategies.FIBONACCI_BACKOFF)
                 .withRecoveryStrategy(RecoveryStrategies.RECOVER)
@@ -29,37 +38,38 @@ public class MssClient {
         client.serializer().register(SetCommand.class, 1);
         client.serializer().register(QueryCommand.class, 2);
         client.connect(members).join();
-        String cmd;
-        while(true)
-        {
-            cmd=sc.next();
-            if(cmd.equals("query"))
-            {
-                client.submit(new QueryCommand("anjuke_sale_1","name")).thenAccept(QueryResult ->
-                {
-
-                    for(ResponseData list:(List<ResponseData>)QueryResult)
-                    {
-                        System.out.println(list);
-                        System.out.println(list.getValue().size());
-                        System.out.println(list.getValue().toString());
-                    }
-                    //System.out.println(QueryResult);
-                    System.out.println("Query Sucess!!!");
-                });
-            }
-            else if(cmd.equals("set"))
-            {
-                //SetCommand(String dic,String id,String type,Map key,Map value)
-                key.put("name","yangjian");
-                value.put("sex","nan");
-                client.submit(new SetCommand("anjuke_sale_1","commu|111","community",key,value)).thenRun(() ->
-                {
-                    System.out.println("Set Sucess!!!");
-                });
-            }
-        }
-
     }
-
+    public void set(WriteData writeData) {
+        client.submit(new SetCommand(
+                                    writeData.getDictionary(),
+                                    writeData.getId(),
+                                    writeData.getType(),
+                                    writeData.getKeyWord(),
+                                    writeData.getValue()
+        )).thenRun(() ->
+        {
+            System.out.println("Set Sucess!!!");
+        }
+        );
+    }
+    public Object get(String dic,String text) throws ExecutionException, InterruptedException {
+        CompletableFuture<List<ResponseData>> ct= client.submit(new QueryCommand(dic, text));
+        ct.thenAccept(result ->
+        {
+         //   result = QueryResult;
+            for (ResponseData list :  result) {
+                System.out.println(list);
+                System.out.println(list.getValue().size());
+                System.out.println(list.getValue().toString());
+            }
+            //System.out.println(QueryResult);
+            System.out.println("Query Sucess!!!");
+        });
+            return  ct.get();
+    }
+public void destroy()
+{
+    if(client != null)
+        client.close();
+}
 }
