@@ -5,6 +5,7 @@ import java.util.Map;
 /**
  * Created by root on 16-7-25.
  */
+//map<dic,Queryvalue>
 public class QueryValue implements Serializable {
     private String id;
     private String type;

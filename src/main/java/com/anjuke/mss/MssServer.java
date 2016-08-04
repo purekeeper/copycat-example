@@ -1,39 +1,43 @@
 package com.anjuke.mss;
-
 import io.atomix.catalyst.transport.Address;
 import io.atomix.catalyst.transport.netty.NettyTransport;
 import io.atomix.copycat.server.CopycatServer;
+import io.atomix.copycat.server.StateMachine;
 import io.atomix.copycat.server.storage.Storage;
-
+import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 
 /**
  * Created by root on 16-7-20.
  */
 public class MssServer {
     private CopycatServer server=null;
-    private String ipAddress;
+    private List<String> ipAddress;
     private int port;
     private String logLocation;
-    //public static void main(String[] args)
-    public MssServer(String ipAddress,int port,String logLocation)
+    @Resource
+    private  TrieDBStateMachine trieDBStateMachine;
+    public MssServer(List<String> ipAddress,int port,String logLocation)
     {
         this.ipAddress = ipAddress;
         this.port = port;
         this.logLocation = logLocation;
     }
+    Supplier<StateMachine> getTrieDBStateMachine = new Supplier<StateMachine>() {
+        @Override
+        public TrieDBStateMachine get() {
+            return trieDBStateMachine;
+        }
+    };
     public void init(){
-        //  if (args.length < 2)
-        // throw new IllegalArgumentException("must supply a path and set of host:port tuples");
-        //db = DBMaker.fileDB("DB").make();
-        // Parse the address to which to bind the server.
-        Address address = new Address(ipAddress,port);
-        // Build a list of all member addresses to which to connect.
         List<Address> members = new ArrayList<>();
-        members.add(address);
-         server = CopycatServer.builder(address)
-                .withStateMachine(TrieDBStateMachine::new)
+        for (String addr:ipAddress)
+        // Build a list of all member addresses to which to connect.
+        members.add(new Address(addr,port));
+         server = CopycatServer.builder(new Address(ipAddress.get(0),port))
+                .withStateMachine(getTrieDBStateMachine)
                 .withTransport(new NettyTransport())
                 .withStorage(Storage.builder()
                         .withDirectory(logLocation)

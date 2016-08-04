@@ -5,6 +5,7 @@ import java.util.Map;
 /**
  * Created by root on 16-8-1.
  */
+//search return data structure
 public class ResponseData implements Serializable{
     private String id;
     private String type;

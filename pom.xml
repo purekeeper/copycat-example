@@ -42,18 +42,14 @@
             <version>1.7.21</version>
         </dependency>
 
+
         <!-- https://mvnrepository.com/artifact/io.atomix.copycat/copycat-client -->
         <dependency>
             <groupId>io.atomix.copycat</groupId>
             <artifactId>copycat-client</artifactId>
             <version>1.1.4</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/org.springframework.data/spring-data-commons -->
-        <dependency>
-            <groupId>org.springframework.data</groupId>
-            <artifactId>spring-data-commons</artifactId>
-            <version>1.12.2.RELEASE</version>
-        </dependency>
+
 
         <!-- https://mvnrepository.com/artifact/io.atomix.catalyst/catalyst-netty -->
         <dependency>
@@ -79,12 +75,7 @@
             <artifactId>mapdb</artifactId>
             <version>3.0.1</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/org.eclipse.collections/eclipse-collections -->
-        <dependency>
-            <groupId>org.eclipse.collections</groupId>
-            <artifactId>eclipse-collections</artifactId>
-            <version>7.1.0</version>
-        </dependency>
+
         <!-- https://mvnrepository.com/artifact/com.google.guava/guava -->
         <dependency>
             <groupId>com.google.guava</groupId>
@@ -120,5 +111,9 @@
             <artifactId>javax.servlet-api</artifactId>
             <version>3.1.0</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/org.springframework/spring-asm -->
+
+
+
     </dependencies>
 </project>

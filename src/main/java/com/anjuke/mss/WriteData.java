@@ -5,6 +5,7 @@ import java.util.Map;
 /**
  * Created by root on 16-8-3.
  */
+//set data structure
 public class WriteData implements Serializable{
     private String dictionary;
     private String id;
@@ -32,10 +33,10 @@ public class WriteData implements Serializable{
         return id;
     }
 
-    public void setKeyWord(Map<String,String> key) {
-        this.keyword=key;
+    public void setKeyword(Map<String,String> keyword) {
+        this.keyword=keyword;
     }
-    public Map<String,String> getKeyWord() {
+    public Map<String,String> getKeyword() {
         return keyword;
     }
 
@@ -46,4 +47,14 @@ public class WriteData implements Serializable{
         return value;
     }
 
+    @Override
+    public String toString() {
+        return "WriteData{" +
+                "dictionary='" + dictionary + '\'' +
+                ", id='" + id + '\'' +
+                ", type='" + type + '\'' +
+                ", keyword=" + keyword +
+                ", value=" + value +
+                '}';
+    }
 }
