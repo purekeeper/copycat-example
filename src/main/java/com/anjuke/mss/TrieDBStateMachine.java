@@ -18,6 +18,8 @@ import java.util.Map.Entry;
 @Service
 public class TrieDBStateMachine extends StateMachine
 {
+
+
     //value=id+keywordtype
     @Resource
     private MapDB db;

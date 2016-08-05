@@ -17,7 +17,6 @@ public  class MapDB {
     private String DBName;
     private DB db=null;
     public MapDB(){
-
     }
     public MapDB(String DBName) {
         this.DBName = DBName;
@@ -37,7 +36,7 @@ public  class MapDB {
                     }
                 });
         if(db!=null)
-            System.out.println("db init Sucews!!");
+            System.out.println("db init sucess!");
     }
     public void destroy() {
         if(db != null)

@@ -32,6 +32,7 @@ public class MssServer {
         }
     };
     public void init(){
+
         List<Address> members = new ArrayList<>();
         for (String addr:ipAddress)
         // Build a list of all member addresses to which to connect.
@@ -48,7 +49,7 @@ public class MssServer {
                 .build();
         server.serializer().register(SetCommand.class, 1);
         server.serializer().register(QueryCommand.class, 2);
-        server.bootstrap(members).join();
+        System.out.println("mss_server start!");
     }
     public void destroy()
     {

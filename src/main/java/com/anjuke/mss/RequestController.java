@@ -1,5 +1,8 @@
 package com.anjuke.mss;
 
+import com.anjuke.mss.MssClient;
+import com.anjuke.mss.ResponseData;
+import com.anjuke.mss.WriteData;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,8 +28,7 @@ public class RequestController {
     }
     @RequestMapping(value = "/search",method = RequestMethod.GET)
     public @ResponseBody  List<ResponseData> get(String dictionary, String text) throws ExecutionException, InterruptedException {
-        System.out.println("dictionary:"+dictionary+"text:"+text);
-        return (List<ResponseData>) mssClient.get(dictionary,text);
+        return (List<ResponseData>) mssClient.search(dictionary,text);
     }
  /*   @RequestMapping(value = "/")
     public void nothing()

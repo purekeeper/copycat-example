@@ -16,7 +16,7 @@ import java.util.concurrent.ExecutionException;
  * Created by root on 16-7-20.
  */
 public class MssClient {
-     private List<String> ipAddress;
+     private List<String> ipAddress=null;
      private int port;
      private CopycatClient client = null;
   //  public static void main(String[] args) throws Exception
@@ -27,7 +27,6 @@ public class MssClient {
     public MssClient()
     {}
        public void init(){
-        //Scanner sc = new Scanner(System.in);
         List<Address> members = new ArrayList<>();
            for (String addr:ipAddress)
             members.add(new Address(addr,port));
@@ -37,9 +36,13 @@ public class MssClient {
                 .withRecoveryStrategy(RecoveryStrategies.RECOVER)
                 .withServerSelectionStrategy(ServerSelectionStrategies.LEADER)
                 .build();
+
         client.serializer().register(SetCommand.class, 1);
+
         client.serializer().register(QueryCommand.class, 2);
+           System.out.println("before join!!");
         client.connect(members).join();
+           System.out.println("mss_client start!");
     }
     public void set(WriteData writeData) {
         client.submit(new SetCommand(
@@ -52,7 +55,7 @@ public class MssClient {
                 System.out.println("Set Sucess!!!")
         );
     }
-    public List<ResponseData> get(String dic,String text) throws ExecutionException, InterruptedException {
+    public List<ResponseData> search(String dic, String text) throws ExecutionException, InterruptedException {
         CompletableFuture<List<ResponseData>> ct= client.submit(new QueryCommand(dic, text));
         ct.thenAccept(result ->
         {
